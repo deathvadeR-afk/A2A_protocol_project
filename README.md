@@ -35,9 +35,14 @@ This system implements the A2A protocol with three specialized agents:
 ### Prerequisites
 - Python 3.8+
 - Virtual environment (recommended)
+- Docker (optional, for containerized deployment)
 
 ### Installation
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd A2A_mastery
+
 # Create virtual environment
 python -m venv venv
 
@@ -65,9 +70,21 @@ M0_API_KEY=your_mem0_api_key
 ```
 
 ### Running the System
+
+#### Option 1: Direct Python Execution
 ```bash
 # Start the Streamlit frontend (this includes the orchestrator)
 streamlit run frontend/streamlit_app.py
+```
+
+#### Option 2: Docker Container
+```bash
+# Build and run with Docker
+docker build -t multi-agent-a2a .
+docker run -p 8501:8501 --env-file .env multi-agent-a2a
+
+# Or use docker-compose
+docker-compose up
 ```
 
 ## 🛠️ System Components
@@ -82,6 +99,15 @@ AgentCards are available in the `.well-known/` directory:
 ## 🔧 Testing
 
 The system uses direct Python method calls for communication between components rather than HTTP APIs. All agent interactions happen within the same Python process through the A2AOrchestrator.
+
+Run tests with:
+```bash
+# Run unit tests
+python run_tests.py
+
+# Or run with pytest
+python -m pytest test_docker.py -v
+```
 
 ## 📚 Documentation
 
@@ -126,6 +152,67 @@ Persistent memory is implemented using Mem0:
 - Context retention across sessions
 - Learning from previous interactions
 
+## 🐳 Docker Support
+
+This application includes Docker support for easy deployment:
+
+### Building the Docker Image
+```bash
+docker build -t multi-agent-a2a .
+```
+
+### Running with Docker
+```bash
+docker run -p 8501:8501 --env-file .env multi-agent-a2a
+```
+
+### Running with Docker Compose
+```bash
+docker-compose up
+```
+
+### Docker Environment Variables
+The Docker container supports the following environment variables:
+- All API keys as listed in the Configuration section
+- `STREAMLIT_SERVER_PORT` - Port for Streamlit server (default: 8501)
+- `STREAMLIT_SERVER_ADDRESS` - Address for Streamlit server (default: 0.0.0.0)
+
+## 🔄 CI/CD Pipeline
+
+The project includes a GitHub Actions CI/CD pipeline:
+
+### Continuous Integration
+1. **Testing**: Runs unit tests on every push/PR
+2. **Code Quality**: Validates Docker configuration files
+3. **Security**: Checks for vulnerabilities in dependencies
+
+### Continuous Deployment
+1. **Building**: Builds Docker images on main branch pushes
+2. **Publishing**: Pushes images to Docker Hub
+3. **Deployment**: Deploys to production environment
+
+### GitHub Actions Workflow
+The workflow is defined in `.github/workflows/ci-cd.yml` and includes:
+- Automated testing on multiple Python versions
+- Docker image building and publishing
+- Deployment hooks for production environments
+
+### Required Secrets
+To use the CI/CD pipeline, set up the following secrets in your GitHub repository:
+- `DOCKER_USERNAME` - Your Docker Hub username
+- `DOCKER_PASSWORD` - Your Docker Hub password/token
+- All API keys as listed in the Configuration section
+
+### Local Development with CI/CD
+You can test the CI/CD pipeline locally by running:
+```bash
+# Validate Docker configuration
+python validate_docker.py
+
+# Run all tests
+python run_tests.py
+```
+
 ## 🎯 Features
 
 - **Multi-Agent Collaboration** - Three specialized agents working together
@@ -135,6 +222,9 @@ Persistent memory is implemented using Mem0:
 - **Security** - API key based authentication
 - **Fallback Support** - Gemini 2.0 Flash fallback for OpenRouter limits
 - **Automatic API Selection** - Intelligent API usage based on task content
+- **Docker Support** - Containerized deployment
+- **CI/CD Pipeline** - Automated testing and deployment
+- **Cross-Platform** - Works on Windows, macOS, and Linux
 
 ## 📖 License
 
