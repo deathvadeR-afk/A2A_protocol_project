@@ -221,14 +221,6 @@ python validate_docker.py
 python run_tests.py
 ```
 
-## 🔒 Security Notice
-
-This project previously had API keys committed to the repository. These keys have been removed and invalidated. If you had previously cloned this repository, please:
-
-1. **Regenerate all your API keys** - The old keys may have been compromised
-2. **Update your local .env file** with the new keys
-3. **Ensure .env is in your .gitignore** to prevent accidental commits
-
 ## 🎯 Features
 
 - **Multi-Agent Collaboration** - Three specialized agents working together
