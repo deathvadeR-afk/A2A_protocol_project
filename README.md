@@ -57,7 +57,15 @@ pip install -r requirements.txt
 ```
 
 ### Configuration
-Create a `.env` file with your API keys:
+Copy the `.env.template` file to `.env` and fill in your API keys:
+```bash
+# On Windows:
+copy .env.template .env
+# On macOS/Linux:
+cp .env.template .env
+```
+
+Then edit the `.env` file with your actual API keys:
 ```env
 OPENROUTER_API_KEY=your_openrouter_api_key
 GOOGLE_API_KEY=your_google_api_key
@@ -212,6 +220,14 @@ python validate_docker.py
 # Run all tests
 python run_tests.py
 ```
+
+## 🔒 Security Notice
+
+This project previously had API keys committed to the repository. These keys have been removed and invalidated. If you had previously cloned this repository, please:
+
+1. **Regenerate all your API keys** - The old keys may have been compromised
+2. **Update your local .env file** with the new keys
+3. **Ensure .env is in your .gitignore** to prevent accidental commits
 
 ## 🎯 Features
 
