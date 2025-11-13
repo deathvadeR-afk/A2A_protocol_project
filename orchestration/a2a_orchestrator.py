@@ -299,7 +299,15 @@ class A2AOrchestrator:
                 
             elif result["agent"] == "analyzer":
                 # Share analysis with the expert
-                analysis_content = result["result"]["content"] if isinstance(result["result"], dict) else str(result["result"])
+                if isinstance(result["result"], dict):
+                    if "content" in result["result"]:
+                        analysis_content = result["result"]["content"]
+                    elif "error" in result["result"]:
+                        analysis_content = f"Error occurred: {result['result']['error']}"
+                    else:
+                        analysis_content = str(result["result"])
+                else:
+                    analysis_content = str(result["result"])
                 analysis_summary = analysis_content[:200] + "..." if len(analysis_content) > 200 else analysis_content
                 self.expert.add_to_context(f"Analysis result: {analysis_summary}")
                 
