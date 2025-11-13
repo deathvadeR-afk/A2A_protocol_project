@@ -199,7 +199,17 @@ class A2AOrchestrator:
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         })
         
-        research_content = research_result["result"]["content"] if isinstance(research_result["result"], dict) else research_result["result"]
+        # Handle research content with proper error checking
+        research_content = research_result["result"]
+        if isinstance(research_content, dict):
+            if "content" in research_content:
+                research_content = research_content["content"]
+            elif "error" in research_content:
+                research_content = f"Error occurred: {research_content['error']}"
+            else:
+                research_content = str(research_content)
+        else:
+            research_content = str(research_content)
         self.add_task_artifact(task_id, {
             "name": "Research Findings",
             "description": "Comprehensive research findings from the research agent",
@@ -231,7 +241,17 @@ class A2AOrchestrator:
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         })
         
-        analysis_content = analysis_result["result"]["content"] if isinstance(analysis_result["result"], dict) else str(analysis_result["result"])
+        # Handle analysis content with proper error checking
+        analysis_content = analysis_result["result"]
+        if isinstance(analysis_content, dict):
+            if "content" in analysis_content:
+                analysis_content = analysis_content["content"]
+            elif "error" in analysis_content:
+                analysis_content = f"Error occurred: {analysis_content['error']}"
+            else:
+                analysis_content = str(analysis_content)
+        else:
+            analysis_content = str(analysis_content)
         self.add_task_artifact(task_id, {
             "name": "Analysis Results",
             "description": "Data analysis and pattern recognition results",
@@ -261,7 +281,17 @@ class A2AOrchestrator:
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         })
         
-        expert_content = expert_result["result"]["content"] if isinstance(expert_result["result"], dict) else expert_result["result"]
+        # Handle expert content with proper error checking
+        expert_content = expert_result["result"]
+        if isinstance(expert_content, dict):
+            if "content" in expert_content:
+                expert_content = expert_content["content"]
+            elif "error" in expert_content:
+                expert_content = f"Error occurred: {expert_content['error']}"
+            else:
+                expert_content = str(expert_content)
+        else:
+            expert_content = str(expert_content)
         self.add_task_artifact(task_id, {
             "name": "Expert Recommendations",
             "description": "Strategic recommendations and expert insights",
@@ -294,7 +324,16 @@ class A2AOrchestrator:
             # Share context between agents where appropriate
             if result["agent"] == "researcher":
                 # Share research findings with the analyzer
-                research_content = result["result"]["content"] if isinstance(result["result"], dict) else result["result"]
+                research_content = result["result"]
+                if isinstance(research_content, dict):
+                    if "content" in research_content:
+                        research_content = research_content["content"]
+                    elif "error" in research_content:
+                        research_content = f"Error occurred: {research_content['error']}"
+                    else:
+                        research_content = str(research_content)
+                else:
+                    research_content = str(research_content)
                 self.analyzer.update_state("recent_research", research_content)
                 
             elif result["agent"] == "analyzer":

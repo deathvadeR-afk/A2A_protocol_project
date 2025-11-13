@@ -4,10 +4,15 @@ import requests
 from dotenv import load_dotenv
 from typing import Dict, Any, List
 from agents.external_apis import ExternalAPIs
-from mem0 import MemoryClient
 
 # Load environment variables
 load_dotenv()
+
+# Try to import Mem0 memory client
+try:
+    from mem0 import MemoryClient
+except ImportError:
+    MemoryClient = None
 
 class SimpleGoogleADKAgent:
     def __init__(self, name, expertise):
@@ -18,8 +23,11 @@ class SimpleGoogleADKAgent:
         self.external_apis = ExternalAPIs()
         # Initialize Mem0 memory client
         mem0_api_key = os.getenv("M0_API_KEY")
-        if mem0_api_key:
-            self.memory_client = MemoryClient(api_key=mem0_api_key)
+        if mem0_api_key and MemoryClient:
+            try:
+                self.memory_client = MemoryClient(api_key=mem0_api_key)
+            except Exception:
+                self.memory_client = None
         else:
             self.memory_client = None
         
@@ -68,15 +76,45 @@ class SimpleGoogleADKAgent:
         }
         
         # Build the prompt with expertise and context
-        system_prompt = f"You are {self.name}, an expert in {self.expertise}. "
-        system_prompt += "Provide helpful and accurate responses based on your expertise. "
-        if self.context_history:
-            system_prompt += f"Previous context: {'; '.join(self.context_history)}. "
-        if memory_context:
-            system_prompt += f"{memory_context}. "
+        system_prompt = f"""You are {self.name}, a world-class expert in {self.expertise}.
+
+YOUR ROLE AND RESPONSIBILITIES:
+- Provide authoritative, accurate, and insightful responses based on your specialized expertise
+- Synthesize complex information into clear, actionable recommendations
+- Draw upon your contextual knowledge and previous interactions to enhance responses
+- Maintain a professional yet accessible communication style
+
+EXPERTISE DOMAIN:
+Your specialized knowledge encompasses:
+- Deep understanding of {self.expertise}
+- Current trends and developments in your field
+- Best practices and proven methodologies
+- Strategic insights and practical applications
+
+CONTEXTUAL AWARENESS:
+You have access to the following contextual information:
+{f"Previous conversation history: {'; '.join(self.context_history[-5:])}" if self.context_history else "No previous conversation history"}
+{memory_context if memory_context else "No relevant memories from previous interactions"}
+
+RESPONSE METHODOLOGY:
+1. Carefully analyze the query and any provided context
+2. Identify the core issues or questions that need to be addressed
+3. Apply your expert knowledge to provide comprehensive answers
+4. Structure your response with clear logic and supporting evidence
+5. Offer actionable insights and practical recommendations when appropriate
+
+RESPONSE GUIDELINES:
+- Begin with a clear, concise summary of your main points
+- Organize information in logical sections with descriptive headings
+- Use specific examples and concrete details to illustrate key concepts
+- Address any potential counterarguments or alternative perspectives
+- Conclude with actionable recommendations or next steps
+- Maintain an authoritative yet approachable tone throughout
+
+When responding to queries, focus on providing maximum value through your expert insights while ensuring clarity and practical applicability."""
             
         payload = {
-            "model": "openai/gpt-3.5-turbo",  # Using a standard model
+            "model": "meta-llama/llama-4-maverick:free",  # Using the free Llama 4 Maverick model
             "messages": [
                 {
                     "role": "system",

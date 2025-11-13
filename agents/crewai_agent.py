@@ -154,7 +154,7 @@ class SimpleCrewAIAgent:
         }
         
         payload = {
-            "model": "openai/gpt-3.5-turbo",  # Using a standard model
+            "model": "meta-llama/llama-4-maverick:free",  # Using the free Llama 4 Maverick model
             "messages": [
                 {
                     "role": "system",

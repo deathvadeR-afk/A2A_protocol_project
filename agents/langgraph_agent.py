@@ -4,10 +4,15 @@ import requests
 from dotenv import load_dotenv
 from typing import Dict, Any
 from agents.external_apis import ExternalAPIs
-from mem0 import MemoryClient
 
 # Load environment variables
 load_dotenv()
+
+# Try to import Mem0 memory client
+try:
+    from mem0 import MemoryClient
+except ImportError:
+    MemoryClient = None
 
 class SimpleLangGraphAgent:
     def __init__(self, name, capabilities):
@@ -18,8 +23,11 @@ class SimpleLangGraphAgent:
         self.external_apis = ExternalAPIs()
         # Initialize Mem0 memory client
         mem0_api_key = os.getenv("M0_API_KEY")
-        if mem0_api_key:
-            self.memory_client = MemoryClient(api_key=mem0_api_key)
+        if mem0_api_key and MemoryClient:
+            try:
+                self.memory_client = MemoryClient(api_key=mem0_api_key)
+            except Exception:
+                self.memory_client = None
         else:
             self.memory_client = None
         
@@ -68,15 +76,60 @@ class SimpleLangGraphAgent:
         }
         
         # Build the prompt based on capabilities and input
-        prompt = f"You are {self.name}, an AI agent with the following capabilities: {', '.join(self.capabilities)}. "
-        prompt += f"Current state: {json.dumps(self.state)}. "
+        prompt = f"""You are {self.name}, an AI agent with specialized capabilities in: {', '.join(self.capabilities)}.
+
+YOUR ROLE AND RESPONSIBILITIES:
+- Analyze and process complex data inputs
+- Identify patterns, trends, and relationships in data
+- Generate insights and actionable recommendations
+- Maintain and update your internal state based on new information
+- Provide structured, logical, and well-reasoned analyses
+
+CURRENT STATE CONTEXT:
+Your current state contains the following information:
+{json.dumps(self.state, indent=2) if self.state else "No current state information"}
+
+AVAILABLE CAPABILITIES:
+1. Data Analysis: Process numerical and categorical data to identify trends
+2. Pattern Recognition: Detect patterns and anomalies in datasets
+3. Statistical Modeling: Apply statistical methods to draw conclusions
+4. Insight Generation: Translate data findings into actionable insights
+
+ANALYSIS METHODOLOGY:
+1. Carefully examine the input data and task requirements
+2. Apply appropriate analytical techniques based on data type
+3. Identify key patterns, trends, and outliers
+4. Cross-reference with your current state information
+5. Generate evidence-based insights and recommendations
+6. Update your state with new findings for future reference
+
+RESPONSE FORMAT:
+Respond with a JSON object that includes:
+- "analysis": A detailed analysis of the input data
+- "patterns_identified": Key patterns or trends discovered
+- "insights": Actionable insights derived from the analysis
+- "recommendations": Specific recommendations based on your findings
+- "state_updates": Any updates to be made to your internal state
+
+Example response format:
+{{
+  "analysis": "Detailed analysis of the data...",
+  "patterns_identified": ["Pattern 1", "Pattern 2"],
+  "insights": ["Insight 1", "Insight 2"],
+  "recommendations": ["Recommendation 1", "Recommendation 2"],
+  "state_updates": {{"key_metric": "value"}}
+}}
+
+INPUT TO PROCESS:
+{json.dumps(input_data, indent=2)}"""
+        
         if memory_context:
-            prompt += f"{memory_context}. "
-        prompt += f"Input to process: {json.dumps(input_data)}. "
-        prompt += "Respond with a JSON object containing your analysis and any updates to your state."
+            prompt += f"\n\nRELEVANT MEMORIES:\n{memory_context}"
+            
+        prompt += "\n\nPlease provide your analysis in the specified JSON format."
         
         payload = {
-            "model": "openai/gpt-3.5-turbo",  # Using a standard model
+            "model": "meta-llama/llama-4-maverick:free",  # Using the free Llama 4 Maverick model
             "messages": [
                 {
                     "role": "user",
