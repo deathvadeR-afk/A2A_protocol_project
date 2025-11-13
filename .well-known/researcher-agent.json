@@ -1,0 +1,48 @@
+{
+  "name": "Research Analyst Agent",
+  "description": "Specialized agent for comprehensive research and information gathering using multiple external APIs",
+  "url": "http://localhost:8501/researcher",
+  "provider": {
+    "organization": "Multi-Agent System",
+    "url": "http://localhost:8501"
+  },
+  "version": "1.0.0",
+  "documentationUrl": "http://localhost:8501/docs",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "stateTransitionHistory": true
+  },
+  "authentication": {
+    "schemes": ["Bearer"],
+    "credentials": "API_KEY_REQUIRED"
+  },
+  "defaultInputModes": ["text/plain", "application/json"],
+  "defaultOutputModes": ["text/plain", "application/json"],
+  "skills": [
+    {
+      "id": "web-research",
+      "name": "Web Research",
+      "description": "Conduct comprehensive web research using Tavily API",
+      "tags": ["research", "web-search", "information-gathering"],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain", "application/json"]
+    },
+    {
+      "id": "news-analysis",
+      "name": "News Analysis",
+      "description": "Gather and analyze current news from NewsAPI",
+      "tags": ["news", "current-events", "analysis"],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain", "application/json"]
+    },
+    {
+      "id": "weather-data",
+      "name": "Weather Data Retrieval",
+      "description": "Get current weather information from OpenWeather API",
+      "tags": ["weather", "geolocation", "data"],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/plain", "application/json"]
+    }
+  ]
+}

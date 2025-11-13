@@ -1,0 +1,48 @@
+{
+  "name": "Multi-Agent System with A2A Protocol",
+  "description": "A coordinated system of three specialized AI agents (Research, Analysis, Expert) implementing the Agent2Agent protocol for seamless collaboration",
+  "url": "http://localhost:8501",
+  "provider": {
+    "organization": "Multi-Agent System",
+    "url": "http://localhost:8501"
+  },
+  "version": "1.0.0",
+  "documentationUrl": "http://localhost:8501/docs",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true,
+    "stateTransitionHistory": true
+  },
+  "authentication": {
+    "schemes": ["Bearer"],
+    "credentials": "API_KEY_REQUIRED"
+  },
+  "defaultInputModes": ["text/plain", "application/json"],
+  "defaultOutputModes": ["text/plain", "application/json"],
+  "skills": [
+    {
+      "id": "collaborative-task-execution",
+      "name": "Collaborative Task Execution",
+      "description": "Coordinate multiple agents to work together on complex tasks following the research → analysis → expert workflow",
+      "tags": ["collaboration", "workflow", "coordination"],
+      "inputModes": ["text/plain", "application/json"],
+      "outputModes": ["text/plain", "application/json"]
+    },
+    {
+      "id": "individual-agent-routing",
+      "name": "Individual Agent Routing",
+      "description": "Route tasks to specific agents based on task type and requirements",
+      "tags": ["routing", "specialization", "task-management"],
+      "inputModes": ["text/plain", "application/json"],
+      "outputModes": ["text/plain", "application/json"]
+    },
+    {
+      "id": "api-integration",
+      "name": "External API Integration",
+      "description": "Integrate with multiple external APIs including Tavily, NewsAPI, OpenWeather, and more",
+      "tags": ["api", "integration", "external-services"],
+      "inputModes": ["text/plain", "application/json"],
+      "outputModes": ["text/plain", "application/json"]
+    }
+  ]
+}

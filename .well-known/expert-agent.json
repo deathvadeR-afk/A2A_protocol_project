@@ -1,0 +1,48 @@
+{
+  "name": "Domain Expert Agent",
+  "description": "Specialized agent for providing expert knowledge, strategic recommendations, and business insights",
+  "url": "http://localhost:8501/expert",
+  "provider": {
+    "organization": "Multi-Agent System",
+    "url": "http://localhost:8501"
+  },
+  "version": "1.0.0",
+  "documentationUrl": "http://localhost:8501/docs",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "stateTransitionHistory": true
+  },
+  "authentication": {
+    "schemes": ["Bearer"],
+    "credentials": "API_KEY_REQUIRED"
+  },
+  "defaultInputModes": ["text/plain", "application/json"],
+  "defaultOutputModes": ["text/plain", "application/json"],
+  "skills": [
+    {
+      "id": "strategic-advice",
+      "name": "Strategic Advice",
+      "description": "Provide strategic recommendations based on research and analysis",
+      "tags": ["strategy", "recommendations", "business"],
+      "inputModes": ["text/plain", "application/json"],
+      "outputModes": ["text/plain", "application/json"]
+    },
+    {
+      "id": "domain-expertise",
+      "name": "Domain Expertise",
+      "description": "Apply deep expertise in technology trends and business strategy",
+      "tags": ["expertise", "knowledge", "consulting"],
+      "inputModes": ["text/plain", "application/json"],
+      "outputModes": ["text/plain", "application/json"]
+    },
+    {
+      "id": "implementation-guidance",
+      "name": "Implementation Guidance",
+      "description": "Provide practical guidance for implementing solutions",
+      "tags": ["implementation", "guidance", "best-practices"],
+      "inputModes": ["text/plain", "application/json"],
+      "outputModes": ["text/plain", "application/json"]
+    }
+  ]
+}

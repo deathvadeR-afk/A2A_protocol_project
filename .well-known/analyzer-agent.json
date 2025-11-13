@@ -1,0 +1,48 @@
+{
+  "name": "Data Analyzer Agent",
+  "description": "Specialized agent for data analysis, pattern recognition, and statistical modeling",
+  "url": "http://localhost:8501/analyzer",
+  "provider": {
+    "organization": "Multi-Agent System",
+    "url": "http://localhost:8501"
+  },
+  "version": "1.0.0",
+  "documentationUrl": "http://localhost:8501/docs",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "stateTransitionHistory": true
+  },
+  "authentication": {
+    "schemes": ["Bearer"],
+    "credentials": "API_KEY_REQUIRED"
+  },
+  "defaultInputModes": ["text/plain", "application/json"],
+  "defaultOutputModes": ["text/plain", "application/json"],
+  "skills": [
+    {
+      "id": "data-analysis",
+      "name": "Data Analysis",
+      "description": "Perform statistical analysis on numerical datasets",
+      "tags": ["analysis", "statistics", "data-processing"],
+      "inputModes": ["application/json"],
+      "outputModes": ["text/plain", "application/json"]
+    },
+    {
+      "id": "pattern-recognition",
+      "name": "Pattern Recognition",
+      "description": "Identify patterns and trends in complex datasets",
+      "tags": ["pattern-recognition", "trends", "insights"],
+      "inputModes": ["application/json"],
+      "outputModes": ["text/plain", "application/json"]
+    },
+    {
+      "id": "insight-generation",
+      "name": "Insight Generation",
+      "description": "Generate actionable insights from analyzed data",
+      "tags": ["insights", "recommendations", "analysis"],
+      "inputModes": ["application/json"],
+      "outputModes": ["text/plain", "application/json"]
+    }
+  ]
+}

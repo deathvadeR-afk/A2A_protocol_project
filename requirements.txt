@@ -1,0 +1,12 @@
+streamlit
+crewai
+langgraph
+openai
+python-dotenv
+requests
+mem0ai
+wikipedia-api
+flask
+flask-cors
+flask-jwt-extended
+sseclient-py
