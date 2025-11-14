@@ -236,6 +236,16 @@ This project previously had API keys committed to the repository. These keys hav
 2. **Update your local .env file** with the new keys
 3. **Ensure .env is in your .gitignore** to prevent accidental commits
 
+### Local Development with CI/CD
+You can test the CI/CD pipeline locally by running:
+```bash
+# Validate Docker configuration
+python validate_docker.py
+
+# Run all tests
+python run_tests.py
+```
+
 ## 🎯 Features
 
 - **Multi-Agent Collaboration** - Three specialized agents working together using actual AI frameworks
