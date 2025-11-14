@@ -10,7 +10,6 @@ python-dotenv
 requests
 mem0ai
 wikipedia-api
-sseclient-py
 pytest
 # Langfuse for observability
 langfuse>=2.0.0
