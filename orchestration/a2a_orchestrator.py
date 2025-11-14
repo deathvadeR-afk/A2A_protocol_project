@@ -1,10 +1,11 @@
 import json
 import time
 import uuid
+import os
 from typing import Dict, Any, List, Optional
-from agents.crewai_agent import SimpleCrewAIAgent
-from agents.langgraph_agent import SimpleLangGraphAgent
-from agents.google_adk_agent import SimpleGoogleADKAgent
+from agents.crewai_agent import RealCrewAIAgent
+from agents.langgraph_agent import RealLangGraphAgent
+from agents.google_adk_agent import RealGoogleADKAgent
 
 # Task state enumeration
 class TaskState:
@@ -35,21 +36,35 @@ class Task:
 class A2AOrchestrator:
     def __init__(self, user_id: str = "default_user"):
         self.user_id = user_id
-        # Initialize all agents
-        self.researcher = SimpleCrewAIAgent(
+        # Initialize Langfuse for observability
+        try:
+            from langfuse import Langfuse
+            self.langfuse = Langfuse(
+                public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
+                secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
+                host=os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
+            )
+        except ImportError:
+            self.langfuse = None
+        except Exception as e:
+            print(f"Warning: Langfuse initialization failed: {e}")
+            self.langfuse = None
+            
+        # Initialize all agents with actual frameworks
+        self.researcher = RealCrewAIAgent(
             role="Research Analyst",
-            goal="Analyze topics and provide comprehensive insights",
-            backstory="You are an experienced analyst with expertise in research and analysis across multiple domains."
+            goal="Analyze topics and provide comprehensive insights using actual CrewAI framework",
+            backstory="You are an experienced analyst with expertise in research and analysis across multiple domains, utilizing the powerful CrewAI framework."
         )
         
-        self.analyzer = SimpleLangGraphAgent(
+        self.analyzer = RealLangGraphAgent(
             name="Data Analyzer",
             capabilities=["data analysis", "pattern recognition", "insight generation", "statistical modeling"]
         )
         
-        self.expert = SimpleGoogleADKAgent(
+        self.expert = RealGoogleADKAgent(
             name="Domain Expert",
-            expertise="technology trends, business strategy, and implementation best practices"
+            expertise="technology trends, business strategy, and implementation best practices using Google ADK framework"
         )
         
         self.agents = {
@@ -92,6 +107,21 @@ class A2AOrchestrator:
         """
         Route a task to the appropriate agent based on task type
         """
+        # Start Langfuse trace if available
+        trace = None
+        if self.langfuse:
+            try:
+                trace = self.langfuse.trace(
+                    name="task-routing",
+                    user_id=self.user_id,
+                    metadata={
+                        "task_type": task.get("type", "general"),
+                        "task_content_length": len(task.get("content", ""))
+                    }
+                )
+            except Exception as e:
+                print(f"Warning: Failed to create Langfuse trace: {e}")
+        
         task_type = task.get("type", "general")
         content = task.get("content", "")
         
@@ -167,6 +197,21 @@ class A2AOrchestrator:
         """
         Execute a task collaboratively where all agents work together
         """
+        # Start Langfuse trace if available
+        trace = None
+        if self.langfuse:
+            try:
+                trace = self.langfuse.trace(
+                    name="collaborative-task-execution",
+                    user_id=self.user_id,
+                    metadata={
+                        "task_description": task_description,
+                        "task_length": len(task_description)
+                    }
+                )
+            except Exception as e:
+                print(f"Warning: Failed to create Langfuse trace: {e}")
+        
         if conversation_history is None:
             conversation_history = []
         

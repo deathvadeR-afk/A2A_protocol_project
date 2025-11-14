@@ -2,6 +2,7 @@ import os
 import requests
 import wikipediaapi
 from dotenv import load_dotenv
+from typing import Dict, Any, Optional
 
 # Load environment variables
 load_dotenv()
@@ -20,12 +21,38 @@ class ExternalAPIs:
             user_agent='MultiAgentSystem/1.0 (https://github.com/your-username/multi-agent-system)',
             language='en'
         )
+        
+        # Initialize Langfuse for observability
+        try:
+            from langfuse import Langfuse
+            self.langfuse = Langfuse(
+                public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
+                secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
+                host=os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
+            )
+        except ImportError:
+            self.langfuse = None
+        except Exception as e:
+            print(f"Warning: Langfuse initialization failed: {e}")
+            self.langfuse = None
     
     def tavily_search(self, query):
         """Search using Tavily API"""
         if not self.tavily_api_key:
             return "Tavily API key not configured"
             
+        # Add Langfuse span for tracing if available
+        span = None
+        if self.langfuse:
+            try:
+                trace = self.langfuse.trace(name="external-api-call", user_id="default_user")
+                span = trace.span(
+                    name="tavily-search",
+                    input={"query": query}
+                )
+            except Exception as e:
+                print(f"Warning: Failed to create Langfuse span: {e}")
+        
         url = "https://api.tavily.com/search"
         payload = {
             "api_key": self.tavily_api_key,
@@ -40,17 +67,65 @@ class ExternalAPIs:
             response = requests.post(url, json=payload, timeout=30)
             if response.status_code == 200:
                 data = response.json()
-                return data.get("answer", "No answer found") or data.get("results", [])
+                result = data.get("answer", "No answer found") or data.get("results", [])
+                
+                # Update Langfuse span with output if available
+                if span:
+                    try:
+                        span.update(
+                            output=result,
+                            metadata={"status": "success"}
+                        )
+                    except Exception as e:
+                        print(f"Warning: Failed to update Langfuse span: {e}")
+                
+                return result
             else:
-                return f"Tavily API Error: {response.status_code} - {response.text}"
+                error_msg = f"Tavily API Error: {response.status_code} - {response.text}"
+                
+                # Update Langfuse span with error if available
+                if span:
+                    try:
+                        span.update(
+                            output=error_msg,
+                            metadata={"status": "error", "error_code": response.status_code}
+                        )
+                    except Exception as e:
+                        print(f"Warning: Failed to update Langfuse span: {e}")
+                
+                return error_msg
         except Exception as e:
-            return f"Tavily Search Error: {str(e)}"
+            error_msg = f"Tavily Search Error: {str(e)}"
+            
+            # Update Langfuse span with error if available
+            if span:
+                try:
+                    span.update(
+                        output=error_msg,
+                        metadata={"status": "exception", "error_type": type(e).__name__}
+                    )
+                except Exception as e:
+                    print(f"Warning: Failed to update Langfuse span: {e}")
+            
+            return error_msg
     
     def get_news(self, category="technology"):
         """Get news using News API"""
         if not self.news_api_key:
             return "News API key not configured"
             
+        # Add Langfuse span for tracing if available
+        span = None
+        if self.langfuse:
+            try:
+                trace = self.langfuse.trace(name="external-api-call", user_id="default_user")
+                span = trace.span(
+                    name="news-api-call",
+                    input={"category": category}
+                )
+            except Exception as e:
+                print(f"Warning: Failed to create Langfuse span: {e}")
+        
         url = "https://newsapi.org/v2/top-headlines"
         params = {
             "category": category,
@@ -63,11 +138,47 @@ class ExternalAPIs:
             if response.status_code == 200:
                 data = response.json()
                 articles = data.get("articles", [])
-                return [{"title": a["title"], "description": a["description"]} for a in articles]
+                result = [{"title": a["title"], "description": a["description"]} for a in articles]
+                
+                # Update Langfuse span with output if available
+                if span:
+                    try:
+                        span.update(
+                            output=result,
+                            metadata={"status": "success", "article_count": len(articles)}
+                        )
+                    except Exception as e:
+                        print(f"Warning: Failed to update Langfuse span: {e}")
+                
+                return result
             else:
-                return f"News API Error: {response.status_code} - {response.text}"
+                error_msg = f"News API Error: {response.status_code} - {response.text}"
+                
+                # Update Langfuse span with error if available
+                if span:
+                    try:
+                        span.update(
+                            output=error_msg,
+                            metadata={"status": "error", "error_code": response.status_code}
+                        )
+                    except Exception as e:
+                        print(f"Warning: Failed to update Langfuse span: {e}")
+                
+                return error_msg
         except Exception as e:
-            return f"News API Error: {str(e)}"
+            error_msg = f"News API Error: {str(e)}"
+            
+            # Update Langfuse span with error if available
+            if span:
+                try:
+                    span.update(
+                        output=error_msg,
+                        metadata={"status": "exception", "error_type": type(e).__name__}
+                    )
+                except Exception as e:
+                    print(f"Warning: Failed to update Langfuse span: {e}")
+            
+            return error_msg
     
     def get_weather(self, city):
         """Get weather using OpenWeather API"""

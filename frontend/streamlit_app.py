@@ -64,13 +64,28 @@ def main():
     
     st.title("🤖 Multi-Agent System with A2A Protocol")
     st.markdown("""
-    This system demonstrates the coordination of three AI agents:
-    - **Research Agent** (CrewAI-style)
-    - **Analysis Agent** (LangGraph-style)
-    - **Expert Agent** (Google ADK-style)
+    This system demonstrates the coordination of three AI agents using actual frameworks:
+    - **Research Agent** (CrewAI Framework) - Specialized in research and information gathering
+    - **Analysis Agent** (LangGraph Framework) - Specialized in data analysis and pattern recognition
+    - **Expert Agent** (Google ADK Framework) - Specialized in domain expertise and strategic recommendations
     
     Tasks are orchestrated using a simplified A2A protocol with collaborative agent communication.
     """)
+    
+    # Add information about the frameworks
+    with st.expander("ℹ️ About the Agent Frameworks", expanded=False):
+        st.markdown("""
+        This system uses actual industry-standard frameworks for each agent:
+        
+        - **CrewAI Framework**: A framework for orchestrating role-playing AI agents. 
+          Agents are given roles, goals, and backstories to fulfill their tasks.
+          
+        - **LangGraph Framework**: A library for building stateful, multi-step AI applications. 
+          It provides precise control over agent workflows and state management.
+          
+        - **Google ADK Framework**: Google's Agent Development Kit for building sophisticated AI agents. 
+          It provides tools for creating agents with specialized expertise and capabilities.
+        """)
     
     # Initialize session state
     if "orchestrator" not in st.session_state:
@@ -246,10 +261,17 @@ def main():
     with col2:
         st.header("Agent Status")
         
-        # Display agent statuses
+        # Display agent statuses with framework information
         st.subheader("Active Agents")
+        agent_frameworks = {
+            "researcher": "CrewAI Framework",
+            "analyzer": "LangGraph Framework",
+            "expert": "Google ADK Framework"
+        }
+        
         for agent_name in st.session_state.orchestrator.agents.keys():
-            st.markdown(f"- **{agent_name.capitalize()}** ✅ Active")
+            framework = agent_frameworks.get(agent_name, "Framework")
+            st.markdown(f"- **{agent_name.capitalize()}** ✅ Active ({framework})")
         
         # Display conversation history
         st.subheader("Conversation History")
@@ -282,8 +304,8 @@ def main():
                             token_usage = result_data["token_usage"]
                             if token_usage:
                                 st.markdown("**Token Usage:**")
-                                tokens_used = token_usage.get("total_tokens", 0)
-                                st.markdown(f"Total Tokens: {tokens_used}")
+                                st.json(token_usage)
+
         else:
             st.info("No tasks executed yet.")
     

@@ -12,3 +12,6 @@ services:
     environment:
       - STREAMLIT_SERVER_PORT=8501
       - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      # Add environment variables for the new frameworks
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - M0_API_KEY=${M0_API_KEY}

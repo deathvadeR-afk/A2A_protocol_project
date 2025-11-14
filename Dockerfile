@@ -9,6 +9,8 @@ COPY requirements.txt .
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+# Install additional dependencies that might be needed for the actual frameworks
+RUN pip install --no-cache-dir litellm
 
 # Copy the application code
 COPY . .

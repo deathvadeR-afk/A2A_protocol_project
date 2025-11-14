@@ -1,13 +1,16 @@
 streamlit
-crewai
+crewai[tools]
 langgraph
+langchain-core
+langchain-community
+langchain-openai
+google-adk
 openai
 python-dotenv
 requests
 mem0ai
 wikipedia-api
-flask
-flask-cors
-flask-jwt-extended
 sseclient-py
 pytest
+# Langfuse for observability
+langfuse>=2.0.0

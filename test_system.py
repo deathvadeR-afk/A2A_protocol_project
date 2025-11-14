@@ -4,9 +4,9 @@ import os
 # Add the current directory to the Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from agents.crewai_agent import SimpleCrewAIAgent
-from agents.langgraph_agent import SimpleLangGraphAgent
-from agents.google_adk_agent import SimpleGoogleADKAgent
+from agents.crewai_agent import RealCrewAIAgent
+from agents.langgraph_agent import RealLangGraphAgent
+from agents.google_adk_agent import RealGoogleADKAgent
 from orchestration.a2a_orchestrator import A2AOrchestrator
 
 def test_agents():
@@ -14,20 +14,20 @@ def test_agents():
     print("Testing individual agents imports...")
     
     # Test that we can create all agent types
-    researcher = SimpleCrewAIAgent(
+    researcher = RealCrewAIAgent(
         role="Research Analyst",
-        goal="Analyze market trends and provide insights",
-        backstory="You are an experienced analyst with expertise in market research and trend analysis."
+        goal="Analyze market trends and provide insights using actual CrewAI framework",
+        backstory="You are an experienced analyst with expertise in market research and trend analysis, utilizing the powerful CrewAI framework."
     )
     
-    analyzer = SimpleLangGraphAgent(
+    analyzer = RealLangGraphAgent(
         name="Data Analyzer",
         capabilities=["data analysis", "pattern recognition"]
     )
     
-    expert = SimpleGoogleADKAgent(
+    expert = RealGoogleADKAgent(
         name="Technology Expert",
-        expertise="artificial intelligence and machine learning technologies"
+        expertise="artificial intelligence and machine learning technologies using Google ADK framework"
     )
     
     print("✅ All agents created successfully!")

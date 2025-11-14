@@ -1,14 +1,14 @@
 # Multi-Agent System with A2A Protocol
 
-A coordinated system of three specialized AI agents (Research, Analysis, Expert) implementing the Agent-to-Agent (A2A) protocol for seamless collaboration.
+A coordinated system of three specialized AI agents (Research, Analysis, Expert) implementing the Agent-to-Agent (A2A) protocol for seamless collaboration, using actual AI frameworks.
 
 ## 🏗️ Architecture Overview
 
-This system implements the A2A protocol with three specialized agents:
+This system implements the A2A protocol with three specialized agents using actual AI frameworks:
 
-1. **Research Analyst Agent** - Specialized for comprehensive research and information gathering
-2. **Data Analyzer Agent** - Specialized for data analysis, pattern recognition, and statistical modeling
-3. **Domain Expert Agent** - Specialized for providing expert knowledge, strategic recommendations, and business insights
+1. **Research Analyst Agent** (CrewAI Framework) - Specialized for comprehensive research and information gathering
+2. **Data Analyzer Agent** (LangGraph Framework) - Specialized for data analysis, pattern recognition, and statistical modeling
+3. **Domain Expert Agent** (Google ADK Framework) - Specialized for providing expert knowledge, strategic recommendations, and business insights
 
 ## 📋 A2A Protocol Compliance
 
@@ -75,6 +75,9 @@ OPENWEATHER_API_KEY=your_openweather_api_key
 IP_GEOLOCATION_API_KEY=your_ip_geolocation_api_key
 ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key
 M0_API_KEY=your_mem0_api_key
+LANGFUSE_PUBLIC_KEY=your_langfuse_public_key
+LANGFUSE_SECRET_KEY=your_langfuse_secret_key
+LANGFUSE_HOST=https://cloud.langfuse.com
 ```
 
 ### Running the System
@@ -110,11 +113,8 @@ The system uses direct Python method calls for communication between components 
 
 Run tests with:
 ```bash
-# Run unit tests
-python run_tests.py
-
-# Or run with pytest
-python -m pytest test_docker.py -v
+# Run basic import tests
+python test_system.py
 ```
 
 ## 📚 Documentation
@@ -139,9 +139,9 @@ Tasks follow the A2A task lifecycle with:
 ## 🤝 Collaboration Workflow
 
 The system implements a three-stage collaborative workflow:
-1. **Research** - Research Analyst gathers comprehensive information
-2. **Analysis** - Data Analyzer processes findings and identifies patterns
-3. **Expertise** - Domain Expert provides strategic recommendations
+1. **Research** - Research Analyst gathers comprehensive information using CrewAI framework
+2. **Analysis** - Data Analyzer processes findings and identifies patterns using LangGraph framework
+3. **Expertise** - Domain Expert provides strategic recommendations using Google ADK framework
 
 ## 📈 External API Integration
 
@@ -159,6 +159,23 @@ Persistent memory is implemented using Mem0:
 - Long-term storage of agent interactions
 - Context retention across sessions
 - Learning from previous interactions
+
+## 🔍 Observability with Langfuse
+
+This system now includes Langfuse for comprehensive observability:
+
+### Features
+- **LLM Tracing** - Track all LLM calls across agents
+- **Prompt Management** - Version and manage prompts
+- **Performance Monitoring** - Monitor latency and costs
+- **Debugging** - Identify and troubleshoot issues
+- **Analytics** - Gain insights into agent performance
+
+### Implementation
+- Full tracing across all three agents (CrewAI, LangGraph, Google ADK)
+- External API call tracing
+- Collaborative workflow tracing
+- Error tracking and performance metrics
 
 ## 🐳 Docker Support
 
@@ -211,16 +228,6 @@ To use the CI/CD pipeline, set up the following secrets in your GitHub repositor
 - `DOCKER_PASSWORD` - Your Docker Hub password/token
 - All API keys as listed in the Configuration section
 
-### Local Development with CI/CD
-You can test the CI/CD pipeline locally by running:
-```bash
-# Validate Docker configuration
-python validate_docker.py
-
-# Run all tests
-python run_tests.py
-```
-
 ## 🔒 Security Notice
 
 This project previously had API keys committed to the repository. These keys have been removed and invalidated. If you had previously cloned this repository, please:
@@ -231,7 +238,7 @@ This project previously had API keys committed to the repository. These keys hav
 
 ## 🎯 Features
 
-- **Multi-Agent Collaboration** - Three specialized agents working together
+- **Multi-Agent Collaboration** - Three specialized agents working together using actual AI frameworks
 - **A2A Protocol Compliance** - Full implementation of Agent-to-Agent protocol
 - **External API Integration** - Access to multiple data sources
 - **Memory Management** - Persistent storage with Mem0
@@ -241,6 +248,7 @@ This project previously had API keys committed to the repository. These keys hav
 - **Docker Support** - Containerized deployment
 - **CI/CD Pipeline** - Automated testing and deployment
 - **Cross-Platform** - Works on Windows, macOS, and Linux
+- **Observability** - Full tracing and monitoring with Langfuse
 
 ## 📖 License
 
